@@ -9,6 +9,7 @@
 #include "game/memory.h"
 #include "game/msm.h"
 #include "game/object.h"
+#include "game/objsub.h"
 #include "game/pad.h"
 #include "game/process.h"
 #include "game/sprite.h"
@@ -106,11 +107,47 @@ void ObjectSetup(void)
          HuWindowInit();
          MGSeqInit();
          HuWinInit(1);
+#ifdef PORT_HAS_MSM
+         {
+             void *group_samp = HuMemDirectMalloc(HEAP_DATA, msmSysGetSampSize(0));
+             msmSysLoadGroup(0, group_samp, 0);
+             HuMemDirectFree(group_samp);
+         }
+#endif
          HuAudSndGrpSetSet(0);
          SystemInitF = TRUE;
      }
      initLanguageF = TRUE;
  }
+#endif
+
+#ifdef __EMSCRIPTEN__
+// Test hook (port/src/test_ovl.c, MP4_TEST_OVL): minigames back to back with
+// four computer players; each comes back here when it ends.
+static void BootStartTestOverlay(void)
+{
+    extern s32 port_test_overlay(void);
+    s32 ovl;
+    s16 i;
+    if (!partyboard_settings_skipBootSequence() || (ovl = port_test_overlay()) < 0) {
+        return;
+    }
+    BootInitForSkippedSequence();
+    for (i = 0; i < 4; i++) {
+        GWPlayerCfg[i].character = i;
+        GWPlayerCfg[i].pad_idx = i;
+        GWPlayerCfg[i].iscom = TRUE;
+        GWPlayerCfg[i].diff = 3;
+        GWPlayerCfg[i].group = i;
+        CharMotionInit(GWPlayerCfg[i].character);
+    }
+    GWSystem.mg_next = omMgIndexGet(ovl);
+    omOvlCallEx(ovl, 1, 0, 0);
+    HuPrcEnd();
+    do {
+        HuPrcVSleep();
+    } while (1);
+}
 #endif
 
  void BootExec(void)
@@ -122,6 +159,9 @@ void ObjectSetup(void)
      s16 i;
      OSTick tick_prev;
      Process *curr = HuPrcCurrentGet();
+#ifdef __EMSCRIPTEN__
+     BootStartTestOverlay();
+#endif
 #ifdef TARGET_PC
      if (partyboard_version_is_pal()) {
          if(SystemInitF == FALSE) {
