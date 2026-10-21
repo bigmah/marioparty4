@@ -158,6 +158,13 @@ static void PadReadVSync(u32 retraceCount)
     PADStatus status[4];
     if(!HuDvdErrWait) {
         RumbleBit = PADRead(status);
+#ifdef __EMSCRIPTEN__
+        {
+            // Touch controls and scripted test input (port/src/input_web.cpp).
+            extern void port_pad_apply(PADStatus *status);
+            port_pad_apply(status);
+        }
+#endif
         PADClamp(status);
         chan = 0;
         for(i=0; i<4; i++) {

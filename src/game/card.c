@@ -16,7 +16,13 @@ void HuCardInit(void)
 {
 #ifdef TARGET_PC
         CARDSetLoadType(partyboard_settings_card_file_type());
+#ifdef __EMSCRIPTEN__
+        // A GCI folder: the files carry the disc's game and maker codes
+        // (01-GMPE-*.gci, as Dolphin names them).
+        CARDInit("GMPE", "01");
+#else
         CARDInit("Party Board", "mariopartyrd");
+#endif
 #else
 	CARDInit();
 #endif
