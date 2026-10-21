@@ -733,3 +733,42 @@ void *HuDataReadNumHeapShortForce(s32 dataNum, s32 num, HeapID heap)
 
 char lbl_8011FDA6[] = "** dcnt %d tmp %08x sp1 %08x\n";
 char lbl_8011FDC4[] = "** dcnt %d lastNum %08x\n";
+
+#ifdef __EMSCRIPTEN__
+// Debugging (MP4_DATA_WATCH=1): reports a loaded archive whose directory
+// changes while it stays loaded, i.e. something writing over it.
+#include <stdlib.h>
+void port_data_watch(const char *where)
+{
+    static int enabled = -1;
+    static void *dirs[DATA_MAX_READSTAT];
+    static u32 sums[DATA_MAX_READSTAT];
+    s32 i;
+    if (enabled < 0) {
+        enabled = getenv("MP4_DATA_WATCH") != NULL;
+    }
+    if (!enabled) {
+        return;
+    }
+    for (i = 0; i < DATA_MAX_READSTAT; i++) {
+        HUDATASTAT *stat = &ReadDataStat[i];
+        u32 sum = 0;
+        s32 k;
+        if (stat->dirId == -1 || stat->dirP == NULL || stat->status != 0) {
+            dirs[i] = NULL;
+            continue;
+        }
+        {
+            s32 words = HuMemMemorySizeGet(stat->dirP) / 4;
+            for (k = 0; k < words; k++) {
+                sum = sum * 31 + ((u32 *)stat->dirP)[k];
+            }
+        }
+        if (dirs[i] == stat->dirP && sums[i] != sum) {
+            OSReport("[data watch] %s: archive %d (slot %d, dir %p) changed\n", where, stat->dirId, i, stat->dirP);
+        }
+        dirs[i] = stat->dirP;
+        sums[i] = sum;
+    }
+}
+#endif

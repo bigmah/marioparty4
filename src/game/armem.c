@@ -47,10 +47,11 @@ void HuARInit(void) {
     for (i = 0; i < ARMEM_BLOCK_MAX; i++) {
         ARInfo[i].aMemP = 0;
     }
-#ifdef TARGET_PC
+#if defined(TARGET_PC) && !defined(PORT_HAS_MSM)
     size = ARGetSize() - 0x20;
     ARBase = 0x20;
 #else
+    // MusyX (the sound manager) owns ARAM below HU_AMEM_BASE.
     size = ARGetSize() - HU_AMEM_BASE;
     ARBase = HU_AMEM_BASE;
 #endif

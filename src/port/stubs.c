@@ -140,11 +140,14 @@ void OSClearContext(OSContext *context)
     puts("OSClearContext is a stub");
 }
 
+// The web build keeps interrupt state for its emulated audio hardware (PORT_HAS_MSM).
+#ifndef PORT_HAS_MSM
 BOOL OSDisableInterrupts()
 {
     puts("OSDisableInterrupts is a stub");
     return FALSE;
 }
+#endif
 
 void OSDumpContext(OSContext *context)
 {
@@ -209,11 +212,14 @@ void OSResetSystem(int reset, u32 resetCode, BOOL forceMenu)
     puts("OSResetSystem is a stub");
 }
 
+// The web build keeps interrupt state for its emulated audio hardware (PORT_HAS_MSM).
+#ifndef PORT_HAS_MSM
 BOOL OSRestoreInterrupts(BOOL level)
 {
     puts("OSRestoreInterrupts is a stub");
     return FALSE;
 }
+#endif
 
 s32 OSResumeThread(OSThread *thread)
 {
@@ -424,6 +430,8 @@ void GXResetWriteGatherPipe(void)
 // Hudson
 void HuDvdErrDispInit(GXRenderModeObj *rmode, void *xfb1, void *xfb2) { }
 
+// The web build has the real sound manager (src/msm, PORT_HAS_MSM).
+#ifndef PORT_HAS_MSM
 void msmSysRegularProc(void)
 {
 }
@@ -482,6 +490,8 @@ BOOL msmSysSetOutputMode(SND_OUTPUTMODE mode)
 {
     return TRUE;
 }
+
+#endif
 
 void OSSetSoundMode(u32 mode)
 {

@@ -925,8 +925,8 @@ static void SMSound3DDraw(void);
 
 static void SMSound3DInit(omObjData *object)
 {
-#ifdef __MWERKS__
-    // TODO PC
+#if defined(__MWERKS__) || defined(PORT_HAS_MSM)
+    // TODO PC (natively: there is no sound manager yet)
     s8 *data = msmSeGetIndexPtr(emiCompDataNo);
     emiCompVal = data[12];
     object->func = SMSound3DUpdate;

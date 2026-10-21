@@ -1,4 +1,7 @@
 #include "msm/msmstream.h"
+#ifdef TARGET_PC
+#include "port/msm_swap.h"
+#endif
 #include "msm/msmmem.h"
 #include "msm/msmsys.h"
 
@@ -324,6 +327,9 @@ s32 msmStreamInit(char *pdtPath) {
         msmFioClose(&file);
         return MSM_ERR_READFAIL;
     }
+#ifdef TARGET_PC
+    port_msm_swap_stream_header(&StreamInfo.header);
+#endif
     if (StreamInfo.header.version != MSM_PDT_FILE_VERSION) {
         msmFioClose(&file);
         return MSM_ERR_INVALIDFILE;
@@ -359,6 +365,11 @@ s32 msmStreamInit(char *pdtPath) {
             msmFioClose(&file);
             return MSM_ERR_READFAIL;
         }
+#ifdef TARGET_PC
+        port_msm_swap_streams(StreamInfo.streamPackList, StreamInfo.header.streamMax, StreamInfo.streamPackFlag,
+            StreamInfo.header.sampleOfs - StreamInfo.header.streamPackOfs, StreamInfo.header.streamPackOfs,
+            StreamInfo.adpcmParam, size);
+#endif
     }
     msmFioClose(&file);
     StreamInfo.sampleFrq = (StreamInfo.header.sampleFrq + (SND_STREAM_ADPCM_BLKSIZE-1)) / SND_STREAM_ADPCM_BLKSIZE ;

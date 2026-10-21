@@ -1,4 +1,7 @@
 #include "msm/msmmus.h"
+#ifdef TARGET_PC
+#include "port/msm_swap.h"
+#endif
 #include "msm/msmmem.h"
 
 typedef struct MusPlayer_s {
@@ -355,6 +358,10 @@ int msmMusPlay(int musId, MSM_MUSPARAM* musParam) {
             }
             msmFioClose(&sp10);
             temp_r27->arrfile = temp_r27->songBuf;
+#ifdef TARGET_PC
+            port_msm_forget_songs(temp_r27->songBuf, temp_r28->songSize);
+            port_msm_song_ready(temp_r27->arrfile, temp_r28->songSize);
+#endif
         }
     } else {
         temp_r3_2 = msmSysGetGroupDataPtr(temp_r28->songGrp);
@@ -362,6 +369,9 @@ int msmMusPlay(int musId, MSM_MUSPARAM* musParam) {
             return MSM_ERR_MUSGRP_NOTLOADED;
         }
         temp_r27->arrfile = (void*) ((u32) temp_r3_2 + temp_r3_2->sngOfs + temp_r28->songOfs);
+#ifdef TARGET_PC
+        port_msm_song_ready(temp_r27->arrfile, temp_r28->songSize);
+#endif
     }
     temp_r27->busyF = 1;
     temp_r27->vol = temp_r28->vol;
@@ -422,6 +432,9 @@ s32 msmMusInit(MSM_SYS* arg0, DVDFileInfo* arg1) {
     if (msmFioRead(arg1, mus.musData, arg0->header->musSize, arg0->header->musOfs) < 0) {
         return MSM_ERR_READFAIL;
     }
+#ifdef TARGET_PC
+    port_msm_swap_mus(mus.musData, arg0->header->musSize);
+#endif
     temp_r4 = arg0->info->dummyMusSize;
     if (temp_r4 != 0) {
         if ((mus.musBuf = msmMemAlloc(temp_r4 * arg0->info->musChanMax)) == NULL) {

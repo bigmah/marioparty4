@@ -270,13 +270,13 @@ void ObjectSetup(void)
              HuPrcVSleep();
          }
          if (!SystemInitF) {
-#ifdef __MWERKS__
-             // TODO PC
+#if defined(__MWERKS__) || defined(PORT_HAS_MSM)
+             // TODO PC (natively: there is no sound manager yet)
              void *group_samp;
 #endif
              tick_prev = OSGetTick();
-#ifdef __MWERKS__
-             // TODO PC
+#if defined(__MWERKS__) || defined(PORT_HAS_MSM)
+             // TODO PC (natively: there is no sound manager yet)
              group_samp = HuMemDirectMalloc(HEAP_DATA, msmSysGetSampSize(0));
              msmSysLoadGroup(0, group_samp, 0);
              HuMemDirectFree(group_samp);
@@ -750,6 +750,8 @@ void ObjectSetup(void)
      // TODO PC
      OSReport(">>>>>>>>MSM_SE_SEL_01 %d\n", msmSeGetEntryID(2092, seNo));
      OSReport(">>>>>>>>SE Num %d\n", msmSeGetNumPlay(0));
+     HuAudSStreamPlay(20);
+#elif defined(PORT_HAS_MSM)
      HuAudSStreamPlay(20);
 #endif
      WipeCreate(WIPE_MODE_IN, WIPE_TYPE_NORMAL, 30);

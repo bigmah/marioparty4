@@ -160,6 +160,11 @@ typedef struct msmStreamParam_s {
 } MSM_STREAMPARAM;
 
 s32 msmSysInit(MSM_INIT *init, MSM_ARAM *aram);
+#ifdef TARGET_PC
+// Callers pass a third argument the function doesn't take (wasm traps on the mismatch).
+s32 msmSysLoadGroup(s32 grpId, void *buf);
+#define msmSysLoadGroup(grpId, buf, ...) msmSysLoadGroup(grpId, buf)
+#endif
 BOOL msmSysSetOutputMode(SND_OUTPUTMODE mode);
 s32 msmSysDelGroupAll(void);
 s32 msmSysGetSampSize(BOOL baseGrp);

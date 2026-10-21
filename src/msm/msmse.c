@@ -1,4 +1,7 @@
 #include "msm/msmse.h"
+#ifdef TARGET_PC
+#include "port/msm_swap.h"
+#endif
 #include "msm/msmfio.h"
 #include "msm/msmmem.h"
 
@@ -626,6 +629,9 @@ s32 msmSeInit(MSM_SYS* arg0, DVDFileInfo* arg1) {
     if (msmFioRead(arg1, se.seData, arg0->header->seSize, arg0->header->seOfs) < 0) {
         return MSM_ERR_READFAIL;
     }
+#ifdef TARGET_PC
+    port_msm_swap_se(se.seData, arg0->header->seSize);
+#endif
     playerSize = arg0->info->sfx * sizeof(SE_PLAYER);
     if ((se.player = msmMemAlloc(playerSize)) == NULL) {
         return MSM_ERR_OUTOFMEM;

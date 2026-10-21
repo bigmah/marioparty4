@@ -1,4 +1,7 @@
 #include "msm/msmsys.h"
+#ifdef TARGET_PC
+#include "port/msm_swap.h"
+#endif
 #include "msm/msmfio.h"
 #include "msm/msmmem.h"
 #include "msm/msmmus.h"
@@ -117,6 +120,9 @@ static s32 msmSysLoadBaseGroup(void *buf)
             msmFioClose(&file);
             return MSM_ERR_READFAIL;
         }
+#ifdef TARGET_PC
+        port_msm_swap_group(grpData, grpInfo->dataSize);
+#endif
         if (msmFioRead(&file, buf, grpInfo->sampSize, grpInfo->sampOfs + sys.header->sampOfs) < 0) {
             msmFioClose(&file);
             return MSM_ERR_READFAIL;
@@ -189,6 +195,9 @@ s32 msmSysGroupInit(DVDFileInfo *file)
     if (msmFioRead(file, sys.grpInfo, sys.header->grpInfoSize, sys.header->grpInfoOfs) < 0) {
         return MSM_ERR_READFAIL;
     }
+#ifdef TARGET_PC
+    port_msm_swap_grpinfo(sys.grpInfo, sys.header->grpInfoSize);
+#endif
     if ((sys.grpBufA = msmMemAlloc(sys.info->grpBufSizeA * sys.grpStackAMax)) == NULL) {
         return MSM_ERR_OUTOFMEM;
     }
@@ -519,6 +528,9 @@ static s32 msmSysPushGroup(DVDFileInfo *file, void *buf, MSM_GRP_STACK *grp, s32
     if (msmFioRead(file, grp->buf, grpInfo->dataSize, grpInfo->dataOfs + sys.header->grpDataOfs) < 0) {
         return MSM_ERR_READFAIL;
     }
+#ifdef TARGET_PC
+    port_msm_swap_group(grp->buf, grpInfo->dataSize);
+#endif
     if (msmFioRead(file, buf, grpInfo->sampSize, grpInfo->sampOfs + sys.header->sampOfs) < 0) {
         return MSM_ERR_READFAIL;
     }
@@ -804,6 +816,9 @@ s32 msmSysInit(MSM_INIT *init, MSM_ARAM *aram)
         msmFioClose(&sp10);
         return MSM_ERR_READFAIL;
     }
+#ifdef TARGET_PC
+    port_msm_swap_header(sys.header);
+#endif
     if (sys.header->version != MSM_FILE_VERSION) {
         msmFioClose(&sp10);
         return MSM_ERR_INVALIDFILE;
@@ -816,6 +831,9 @@ s32 msmSysInit(MSM_INIT *init, MSM_ARAM *aram)
         msmFioClose(&sp10);
         return MSM_ERR_READFAIL;
     }
+#ifdef TARGET_PC
+    port_msm_swap_info(sys.info);
+#endif
     if (aram != NULL) {
         if (aram->skipARInit == 0) {
             ARInit(aram->stackIndex, aram->aramEnd);
@@ -866,6 +884,9 @@ s32 msmSysInit(MSM_INIT *init, MSM_ARAM *aram)
                 result = MSM_ERR_READFAIL;
             }
             else {
+#ifdef TARGET_PC
+                port_msm_swap_auxparams(sys.auxParam, sys.header->auxParamSize);
+#endif
                 result = 0;
             }
         }
