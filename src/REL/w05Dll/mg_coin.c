@@ -118,14 +118,24 @@ void fn_1_9AF0(void)
     BoardMGDoneFlagSet(0);
 }
 
+#ifdef TARGET_PC
+// A post-turn hook (s32(void)); the GameCube returns what r3 holds at the end,
+// BoardModelAttrReset's result (wasm traps on a signature mismatch).
+s32 fn_1_9B74(void)
+#else
 void fn_1_9B74(void)
+#endif
 {
     HSFOBJECT *var_r31;
     omDelObjEx(boardObjMan, lbl_1_bss_C8);
     BoardModelKill(lbl_1_bss_FE);
     var_r31 = Hu3DModelObjPtrGet(BoardModelIDGet(lbl_1_bss_14[1]), lbl_1_data_464[lbl_1_bss_B8]);
     var_r31->type = lbl_1_bss_BC;
+#ifdef TARGET_PC
+    return BoardModelAttrReset(lbl_1_bss_14[1], 0x40000004);
+#else
     BoardModelAttrReset(lbl_1_bss_14[1], 0x40000004);
+#endif
 }
 
 void fn_1_9C24(omObjData *arg0)

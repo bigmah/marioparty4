@@ -686,7 +686,12 @@ void fn_1_7A14(void)
     }
 }
 
+#ifdef TARGET_PC
+// Called as a MentDllUnkFunc (two arguments; wasm traps on a mismatch).
+void fn_1_81A8(omObjData *arg0, void *arg1)
+#else
 void fn_1_81A8(omObjData *arg0, void *arg1, void *arg2)
+#endif
 {
     fn_1_1F868();
     lbl_1_bss_3114->unk_04 = NULL;

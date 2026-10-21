@@ -46,8 +46,16 @@ void fn_1_14EF0(void);
 void fn_1_151C8(void);
 void fn_1_154A4(void);
 void fn_1_15774(void);
+#ifdef TARGET_PC
+void fn_1_157C4(omObjData *obj, void *data);
+#else
 void fn_1_157C4(void);
+#endif
+#ifdef TARGET_PC
+void fn_1_15D48(omObjData *obj, void *data);
+#else
 void fn_1_15D48(void);
+#endif
 void fn_1_16320(void);
 void fn_1_16600(s32 arg0);
 void fn_1_16874(s32);
@@ -1318,7 +1326,12 @@ void fn_1_15774(void)
     HuSprAttrSet(var_r31, 2, 4);
 }
 
+#ifdef TARGET_PC
+// Called as a MpexDllUnkFunc2 (wasm traps on a signature mismatch).
+void fn_1_157C4(omObjData *obj, void *data)
+#else
 void fn_1_157C4(void)
+#endif
 {
     float var_f31;
     float var_f30;
@@ -1427,7 +1440,12 @@ void fn_1_157C4(void)
     lbl_1_bss_5DC.unk_28 = 0;
 }
 
+#ifdef TARGET_PC
+// Called as a MpexDllUnkFunc2 (wasm traps on a signature mismatch).
+void fn_1_15D48(omObjData *obj, void *data)
+#else
 void fn_1_15D48(void)
+#endif
 {
     float var_f31;
     float var_f30;

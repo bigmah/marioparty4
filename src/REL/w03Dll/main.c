@@ -32,7 +32,11 @@ void fn_1_AF8(void);
 void fn_1_DEC(void);
 void fn_1_10B0(void);
 void fn_1_10E4(omObjData* arg0);
+#ifdef TARGET_PC
+void fn_1_12C8(void);
+#else
 s32 fn_1_12C8(void);
+#endif
 s32 fn_1_2930(s32 arg0);
 
 #ifndef __MWERKS__
@@ -328,7 +332,12 @@ s32 fn_1_A74(void) {
 }
 
 void fn_1_AF8(void) {
+#ifdef TARGET_PC
+    // fn_1_12C8 returns void (r3 is left nonzero): only the statue's result counts.
+    if ((BoardPlayerSizeGet(GWSystem.player_curr) == 0) && (fn_1_12C8(), 1) && (lbl_1_bss_0->unk2 != 0)) {
+#else
     if ((BoardPlayerSizeGet(GWSystem.player_curr) == 0) && (fn_1_12C8() != 0) && (lbl_1_bss_0->unk2 != 0)) {
+#endif
         BoardJunctionMaskSet(0xC00);
     }
 }

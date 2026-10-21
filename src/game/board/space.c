@@ -27,9 +27,19 @@
 #include <port/byteswap.h>
 #endif
 
+#ifdef TARGET_PC
+// As defined (wasm traps on a call whose signature differs from the callee's).
+s32 BoardBlockExec(s32 player);
+extern void BoardMushroomExec(s32 player);
+extern void BoardBooHouseExec(s32 player);
+#define BoardBlockExec(player, space) BoardBlockExec(player)
+#define BoardMushroomExec(player, space) BoardMushroomExec(player)
+#define BoardBooHouseExec(player, space) BoardBooHouseExec(player)
+#else
 s32 BoardBlockExec(s32 player, s32 space); // wrong
 extern void BoardMushroomExec(s32 player, s32 space); // wrong
 extern void BoardBooHouseExec(s32 player, s32 space); // wrong
+#endif
 extern void BoardBlockHouseExec(s32 player, s32 space); // wrong
 
 static BoardSpace spaceData[2][256];

@@ -35,8 +35,17 @@ typedef struct M418DllUnkStruct7 {
     M418DllUnkStruct8 *unk4;
     s32 unk8;
     s32 unkC;
+#ifdef TARGET_PC
+    // The sequence functions take an argument they don't use; the GameCube
+    // calls them with none (wasm traps on the mismatch).
+    M418DllInFunc unk10;
+    M418DllInRetFunc unk14;
+#define M418_SEQ_ARG 0
+#else
     M418DllFunc unk10;
     M418DllRetFunc unk14;
+#define M418_SEQ_ARG
+#endif
 } M418DllUnkStruct7; // sizeof 0x18
 
 float fn_1_A920(float, float, float);
