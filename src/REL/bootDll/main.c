@@ -10,6 +10,7 @@
 #include "game/msm.h"
 #include "game/object.h"
 #include "game/objsub.h"
+#include "game/board/main.h"
 #include "game/pad.h"
 #include "game/process.h"
 #include "game/sprite.h"
@@ -127,6 +128,7 @@ void ObjectSetup(void)
 static void BootStartTestOverlay(void)
 {
     extern s32 port_test_overlay(void);
+    extern FileListEntry _ovltbl[];
     s32 ovl;
     s16 i;
     if (!partyboard_settings_skipBootSequence() || (ovl = port_test_overlay()) < 0) {
@@ -141,7 +143,18 @@ static void BootStartTestOverlay(void)
         GWPlayerCfg[i].group = i;
         CharMotionInit(GWPlayerCfg[i].character);
     }
-    GWSystem.mg_next = omMgIndexGet(ovl);
+    if (_ovltbl[ovl].name[0] == 'w' && _ovltbl[ovl].name[1] == '0') {
+        // A board (w01Dll..w06Dll): a 3-turn party, as the party menu sets it up.
+        BoardPartyConfigSet(0, 1, 0, 3, 0, 0, 0, 0);
+        for (i = 0; i < 4; i++) {
+            GWPlayerCfg[i].group = 0;
+        }
+        BoardSaveInit(_ovltbl[ovl].name[2] - '1');
+        WipeColorSet(255, 255, 255);
+    }
+    else {
+        GWSystem.mg_next = omMgIndexGet(ovl);
+    }
     omOvlCallEx(ovl, 1, 0, 0);
     HuPrcEnd();
     do {
