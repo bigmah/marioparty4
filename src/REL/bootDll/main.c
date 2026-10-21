@@ -153,7 +153,19 @@ static void BootStartTestOverlay(void)
         WipeColorSet(255, 255, 255);
     }
     else {
-        GWSystem.mg_next = omMgIndexGet(ovl);
+        s32 mg = omMgIndexGet(ovl);
+        GWSystem.mg_next = mg;
+        // Teams as Mini-Game mode sets them (mgmodedll/free_play.c): 1 vs 3, 2 vs 2.
+        if (mg >= 0 && mgInfoTbl[mg].type == 1) {
+            for (i = 0; i < 4; i++) {
+                GWPlayerCfg[i].group = i == 0 ? 0 : 1;
+            }
+        }
+        else if (mg >= 0 && mgInfoTbl[mg].type == 2) {
+            for (i = 0; i < 4; i++) {
+                GWPlayerCfg[i].group = i < 2 ? 0 : 1;
+            }
+        }
     }
     omOvlCallEx(ovl, 1, 0, 0);
     HuPrcEnd();
