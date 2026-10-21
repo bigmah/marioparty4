@@ -6,7 +6,11 @@
 #include <string.h>
 #endif
 
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__EMSCRIPTEN__)
+// The RELs are linked into the wasm module (port/src/rels.c).
+void *port_rel_link(const char *name);
+void (*port_rel_setup(void *handle))(void);
+#elif defined(__linux__) || defined(__APPLE__)
 #include <dlfcn.h>
 #endif
 
@@ -43,7 +47,12 @@ s32 omDLLStart(s16 overlay, s16 flag)
 	dllno = omDLLSearch(overlay);
 	if(dllno >= 0 && !flag) {
 		omDllData *dll = omDLLinfoTbl[dllno];
-#ifdef TARGET_PC
+#if defined(__EMSCRIPTEN__)
+		// As on the GameCube: fresh data and bss, then the prolog again.
+		OSReport("objdll>Already Loaded %s\n", dll->name);
+		dll->handle = port_rel_link(dll->name);
+		port_rel_setup(dll->handle)();
+#elif defined(TARGET_PC)
 		OSReport("objdll>Already Loaded %s\n", dll->name);
 #else
 		OSReport("objdll>Already Loaded %s(%08x %08x)\n", dll->name, dll->module, dll->bss);
@@ -118,6 +127,11 @@ omDllData *omDLLLink(omDllData **dll_ptr, s16 overlay, s16 flag)
 	if (dll->hModule == NULL) {
 		OSReport("objdll>++++++++++++++++ DLL Link Failed\n");
 	}
+#elif defined(__EMSCRIPTEN__)
+	dll->handle = port_rel_link(dllFile->name);
+	if (dll->handle == NULL) {
+		OSReport("objdll>++++++++++++++++ DLL Link Failed %s\n", dllFile->name);
+	}
 #elif defined(__linux__) || defined(__APPLE__) || defined(__ANDROID__)
 	{
 		// RPATH has to be set properly in CMake
@@ -145,6 +159,8 @@ omDllData *omDLLLink(omDllData **dll_ptr, s16 overlay, s16 flag)
 		DLLObjectSetup objectSetup = (DLLObjectSetup)GetProcAddress(dll->hModule, "ObjectSetup");
 		objectSetup();
 		}
+#elif defined(__EMSCRIPTEN__)
+		port_rel_setup(dll->handle)();
 #elif defined(__linux__) || defined(__APPLE__)
 		DLLObjectSetup objectSetup = (DLLObjectSetup)dlsym(dll->handle, "ObjectSetup");
 		objectSetup();
@@ -161,6 +177,8 @@ void omDLLUnlink(omDllData *dll_ptr, s16 flag)
 	OSReport("odjdll>Unlink DLL:%s\n", dll_ptr->name);
 #ifdef _WIN32
     FreeLibrary(dll_ptr->hModule);
+#elif defined(__EMSCRIPTEN__)
+	// Nothing to free: the next link resets the REL's data.
 #elif defined(__linux__) || defined(__APPLE__)
 	dlclose(dll_ptr->handle);
 #else

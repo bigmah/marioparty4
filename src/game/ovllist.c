@@ -5,6 +5,9 @@
 
 #ifdef _WIN32
 #define DLL(name) { #name ".dll", 0 },
+#elif defined(__EMSCRIPTEN__)
+// Linked in: port/src/rels.c looks the name up.
+#define DLL(name) { #name, 0 },
 #elif defined(__APPLE__)
 #define DLL(name) { #name ".dylib", 0 },
 #else

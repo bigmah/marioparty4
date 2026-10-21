@@ -1,7 +1,11 @@
 #include "port/config.hpp"
 #include "fmt/format.h"
 #include "nlohmann/json.hpp"
+#ifdef __EMSCRIPTEN__
+#include <unordered_map>
+#else
 #include "absl/container/flat_hash_map.h"
+#endif
 
 #include "aurora/lib/logging.hpp"
 #include "port/io.hpp"
@@ -20,7 +24,11 @@ using json = nlohmann::json;
 
 aurora::Module PartyBoardConfigLog("partyboard::config");
 
+#ifdef __EMSCRIPTEN__
+static std::unordered_map<std::string_view, ConfigVarBase*> RegisteredConfigVars;
+#else
 static absl::flat_hash_map<std::string_view, ConfigVarBase*> RegisteredConfigVars;
+#endif
 static bool RegistrationDone = false;
 
 static std::u8string GetConfigJsonPath() {
