@@ -8,6 +8,9 @@
 #include "game/process.h"
 #include "game/sprite.h"
 #include "game/window.h"
+#ifdef TARGET_PC
+#include "port/game_time.h"
+#endif
 
 #include <stddef.h>
 #include <string.h>
@@ -381,7 +384,11 @@ void SLCommonSet(void)
 {
     OSTime create_time;
 
+#ifdef TARGET_PC
+    create_time = port_game_time();
+#else
     create_time = OSGetTime();
+#endif
     GWGameStat.create_time = create_time;
     memcpy(&saveBuf.data.stat, &GWGameStat, sizeof(GameStat));
 #ifdef TARGET_PC
@@ -835,7 +842,11 @@ s32 SLFormat(s16 slotNo)
     HuWinExCleanup(window2);
     CARDGetSerialNo(curSlotNo, &SLSerialNo);
     curBoxNo = 0;
+#ifdef TARGET_PC
+    time = port_game_time();
+#else
     time = OSGetTime();
+#endif
     SLSaveDataMake(0, &time);
     SLCheckSumSet();
     return result;

@@ -1,4 +1,7 @@
 #include "dolphin.h"
+#ifdef TARGET_PC
+#include "port/game_time.h"
+#endif
 
 static u32 frand_seed;
 
@@ -10,7 +13,11 @@ static inline u32 frandom(u32 param)
 
     if (param == 0) {
         param = rand8();
+#ifdef TARGET_PC
+        param = param ^ (s64)port_game_time();
+#else
         param = param ^ (s64)OSGetTime();
+#endif
         param ^= 0xD826BC89;
     }
 

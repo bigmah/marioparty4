@@ -18,6 +18,14 @@
 #include "game/thpmain.h"
 #include "game/window.h"
 #include "game/wipe.h"
+
+// The logos' timed waits: frames online (port/game_time.h).
+#ifdef TARGET_PC
+#include "port/game_time.h"
+#define BOOT_TICK() port_game_tick()
+#else
+#define BOOT_TICK() OSGetTick()
+#endif
 #include "math.h"
 
 #include "data_num/title.h"
@@ -289,7 +297,7 @@ static void BootStartTestOverlay(void)
          }
          WipeColorSet(255, 255, 255);
          if (!SystemInitF) {
-             tick_prev = OSGetTick();
+             tick_prev = BOOT_TICK();
              CharInit();
              HuWindowInit();
              MGSeqInit();
@@ -300,7 +308,7 @@ static void BootStartTestOverlay(void)
              HuSprGrpMemberSet(group, 1, sprite_hudson);
              HuSprPosSet(group, 1, 288, 240);
              HuSprAttrSet(group, 1, HUSPR_ATTR_DISPOFF);
-             while (OSTicksToMilliseconds(OSGetTick() - tick_prev) < 3000) {
+             while (OSTicksToMilliseconds(BOOT_TICK() - tick_prev) < 3000) {
                 HuPrcVSleep();
              }
          }
@@ -346,14 +354,14 @@ static void BootStartTestOverlay(void)
              // TODO PC (natively: there is no sound manager yet)
              void *group_samp;
 #endif
-             tick_prev = OSGetTick();
+             tick_prev = BOOT_TICK();
 #if defined(__MWERKS__) || defined(PORT_HAS_MSM)
              // TODO PC (natively: there is no sound manager yet)
              group_samp = HuMemDirectMalloc(HEAP_DATA, msmSysGetSampSize(0));
              msmSysLoadGroup(0, group_samp, 0);
              HuMemDirectFree(group_samp);
 #endif
-             while (OSTicksToMilliseconds(OSGetTick() - tick_prev) < 3000) {
+             while (OSTicksToMilliseconds(BOOT_TICK() - tick_prev) < 3000) {
                 HuPrcVSleep();
              }
          }
@@ -390,12 +398,12 @@ static void BootStartTestOverlay(void)
          while (WipeStatGet()) {
              HuPrcVSleep();
          }
-         tick_prev = OSGetTick();
+         tick_prev = BOOT_TICK();
          if (!SystemInitF) {
              HuAudSndGrpSetSet(0);
              SystemInitF = 1;
          }
-         while (OSTicksToMilliseconds(OSGetTick() - tick_prev) < 1000) {
+         while (OSTicksToMilliseconds(BOOT_TICK() - tick_prev) < 1000) {
             HuPrcVSleep();
          }
          HuSprAttrSet(group, 0, HUSPR_ATTR_DISPOFF);

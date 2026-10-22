@@ -18,6 +18,9 @@
 #include "game/msm.h"
 #include "game/object.h"
 #include "game/pad.h"
+#ifdef TARGET_PC
+#include "port/game_time.h"
+#endif
 #include "game/wipe.h"
 #include "string.h"
 
@@ -1428,7 +1431,11 @@ float BoardArcCos(float value)
 
 void BoardRandInit(void)
 {
+#ifdef TARGET_PC
+    boardRandSeed = port_game_time();
+#else
     boardRandSeed = OSGetTime();
+#endif
 }
 
 u32 BoardRand(void)

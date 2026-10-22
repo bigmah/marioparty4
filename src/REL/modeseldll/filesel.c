@@ -8,6 +8,9 @@
 #include "game/saveload.h"
 #include "game/window.h"
 #include "game/wipe.h"
+#ifdef TARGET_PC
+#include "port/game_time.h"
+#endif
 
 #include "ext_math.h"
 
@@ -1053,7 +1056,11 @@ s32 fn_1_61B4(void)
                 if (!lbl_1_bss_140[temp_r30]) {
                     HuWinMesSet(lbl_1_bss_148, MAKE_MESSID(16, 0x0B));
                     HuWinMesWait(lbl_1_bss_148);
+#ifdef TARGET_PC
+                    sp8 = port_game_time();
+#else
                     sp8 = OSGetTime();
+#endif
                     SLSaveDataMake(1, &sp8);
                     GWGameStatReset();
 #ifdef TARGET_PC

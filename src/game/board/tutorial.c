@@ -9,7 +9,12 @@
 #include <string.h>
 
 SHARED_SYM s32 boardTutorialData[4]; // maybe a single s32 + padding?
+#ifdef TARGET_PC
+// w10's TutorialHookExec returns int: wasm traps on a call through another type.
+static s32 (*tutorialHook)(s16, s32);
+#else
 static void (*tutorialHook)(s16, s32);
+#endif
 s8 boardTutorialDirInputX;
 s8 boardTutorialDirInputY;
 s16 boardTutorialDirInputTime;
