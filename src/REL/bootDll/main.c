@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "ext_math.h"
 #include "game/audio.h"
 #include "game/chrman.h"
@@ -167,7 +168,13 @@ static void BootStartTestOverlay(void)
             }
         }
     }
-    omOvlCallEx(ovl, 1, 0, 0);
+    if (getenv("MP4_TEST_INST") && _ovltbl[ovl].name[0] == 'm') {
+        // Through the instructions screen, as the boards start minigames.
+        omOvlCallEx(DLL_instdll, 1, 0, 0);
+    }
+    else {
+        omOvlCallEx(ovl, 1, 0, 0);
+    }
     HuPrcEnd();
     do {
         HuPrcVSleep();
