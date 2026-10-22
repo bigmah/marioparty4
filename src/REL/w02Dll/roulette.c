@@ -94,10 +94,14 @@ void fn_1_BCFC(void)
     }
 }
 
+#ifdef TARGET_PC
+// A process destructor, called as void(void) (wasm traps on the mismatch).
+void fn_1_BE74(void)
+#else
 s32 fn_1_BE74(void)
+#endif
 {
     lbl_1_bss_38C = 0;
-    // TODO PC
 }
 
 s32 fn_1_BE88(void)

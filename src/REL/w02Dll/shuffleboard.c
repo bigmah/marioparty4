@@ -75,7 +75,11 @@ s32 fn_1_9250(void)
 	return 1;
 }
 
+#ifdef TARGET_PC
+void fn_1_94AC(void);
+#else
 s32 fn_1_94AC(void);
+#endif
 void fn_1_94C0(void);
 
 void fn_1_93C8(u32 arg0)
@@ -96,10 +100,14 @@ void fn_1_93C8(u32 arg0)
 	BoardEventFlagReset();
 }
 
+#ifdef TARGET_PC
+// A process destructor, called as void(void) (wasm traps on the mismatch).
+void fn_1_94AC(void)
+#else
 s32 fn_1_94AC(void)
+#endif
 {
     lbl_1_bss_378 = NULL;
-    // TODO PC
 }
 
 void fn_1_98D8(void);
