@@ -160,7 +160,13 @@ void main(void)
 
         HuPerfBegin(2);
 #ifdef TARGET_PC
-        aurora_begin_frame();
+        if (!aurora_begin_frame()) {
+            // No surface this time (a browser resizing or rotating the page,
+            // a window being moved): skip the frame. Drawing without one
+            // made GX copies index a render pass that doesn't exist.
+            frame_limiter();
+            continue;
+        }
 #endif
         HuSysBeforeRender();
         GXSetGPMetric(GX_PERF0_CLIP_VTX, GX_PERF1_VERTICES);
