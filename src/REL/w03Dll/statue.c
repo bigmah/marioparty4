@@ -583,7 +583,12 @@ void fn_1_2818(void)
     HuPrcSleep(0x3C);
 }
 
+#ifdef TARGET_PC
+// A pre-turn hook, called with no arguments (wasm traps on the mismatch).
+s32 fn_1_2930(void)
+#else
 s32 fn_1_2930(s32 arg0)
+#endif
 {
     lbl_1_bss_0->unk0--;
 

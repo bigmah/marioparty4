@@ -37,7 +37,12 @@ void fn_1_12C8(void);
 #else
 s32 fn_1_12C8(void);
 #endif
+#ifdef TARGET_PC
+// A pre-turn hook, called with no arguments (wasm traps on the mismatch).
+s32 fn_1_2930(void);
+#else
 s32 fn_1_2930(s32 arg0);
+#endif
 
 #ifndef __MWERKS__
 void fn_1_3058(void);

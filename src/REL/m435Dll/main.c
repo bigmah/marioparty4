@@ -2498,6 +2498,16 @@ void fn_1_B828(StructBss9C* arg0) {
     arg0->unk04 = 1;
     temp_r29->work[0] = temp_r29->work[1] = temp_r29->work[2] = temp_r29->work[3] = 0;
 }
+#ifdef TARGET_PC
+static void fn_1_B1F4_thunk(omObjData *object)
+{
+    fn_1_B1F4(object);
+}
+#define OBJFUNC_fn_1_B1F4 fn_1_B1F4_thunk
+#else
+#define OBJFUNC_fn_1_B1F4 (void *)fn_1_B1F4
+#endif
+
 
 void fn_1_B950(omObjData *arg0) {
     StructBss9C* var_r29;
@@ -2525,7 +2535,7 @@ void fn_1_B950(omObjData *arg0) {
         var_r29->unk88[i] = 0.0f;
     }
     var_r29->unk04 = 1;
-    arg0->func = (void*) fn_1_B1F4; // fn_1_B1F4 must return s32 to match
+    arg0->func = OBJFUNC_fn_1_B1F4; // fn_1_B1F4 must return s32 to match (PC: a void thunk, wasm traps on the mismatch)
 }
 
 void fn_1_BBE8(void) {

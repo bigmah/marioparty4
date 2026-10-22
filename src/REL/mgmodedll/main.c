@@ -4,6 +4,20 @@
 
 #include "ext_math.h"
 
+#ifdef TARGET_PC
+// Handlers stored in a two-argument function pointer take two arguments on PC
+// (wasm traps on a call whose signature differs from the callee's).
+#define PC_HANDLER_EXTRA , void *pcUnused
+#define PC_HANDLER_PARAMS0 omObjData *pcObj, void *pcUnused
+#define PC_HANDLER_NULL , NULL
+#define PC_HANDLER_ARGS0 NULL, NULL
+#else
+#define PC_HANDLER_EXTRA
+#define PC_HANDLER_PARAMS0 void
+#define PC_HANDLER_NULL
+#define PC_HANDLER_ARGS0
+#endif
+
 extern s32 rand8(void);
 
 typedef struct {
@@ -52,7 +66,7 @@ void fn_1_19A30(StructBss8 *arg0);
 void fn_1_19B8C(void);
 void fn_1_19D00(void);
 void fn_1_19E94(void);
-void fn_1_19F5C(omObjData *arg0);
+void fn_1_19F5C(omObjData *arg0 PC_HANDLER_EXTRA);
 void fn_1_1A564(void);
 void fn_1_1A6A0(void);
 void fn_1_1A8E8(void);
@@ -73,7 +87,7 @@ void fn_1_1EB20(StructBss8_24 *arg0);
 void fn_1_1EBE8(void);
 void fn_1_1ED20(void);
 void fn_1_1EE58(s32 arg0, UnkFunc1EE58Struct *arg1);
-void fn_1_1F32C(omObjData *arg0);
+void fn_1_1F32C(omObjData *arg0 PC_HANDLER_EXTRA);
 void fn_1_1FABC(void);
 void fn_1_1FC44(s32 arg0);
 void fn_1_20728(void);
@@ -443,7 +457,7 @@ s32 lbl_1_data_448[][4] = { { 262, 262, 262, 262 }, { 314, 307, 373, 373 }, { 36
 
 s32 lbl_1_data_488 = -1;
 
-void fn_1_19F5C(omObjData *arg0)
+void fn_1_19F5C(omObjData *arg0 PC_HANDLER_EXTRA)
 {
     float var_f30;
     float var_f31;
@@ -1405,7 +1419,7 @@ void fn_1_1EE58(s32 arg0, UnkFunc1EE58Struct *arg1)
     lbl_1_bss_2050.unk1C[3] = 0;
 }
 
-void fn_1_1F32C(omObjData *arg0)
+void fn_1_1F32C(omObjData *arg0 PC_HANDLER_EXTRA)
 {
     float var_f31;
     float var_f30;

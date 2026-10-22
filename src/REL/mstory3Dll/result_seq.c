@@ -22,6 +22,20 @@
 
 #include "ext_math.h"
 
+#ifdef TARGET_PC
+// Handlers stored in a two-argument function pointer take two arguments on PC
+// (wasm traps on a call whose signature differs from the callee's).
+#define PC_HANDLER_EXTRA , void *pcUnused
+#define PC_HANDLER_PARAMS0 omObjData *pcObj, void *pcUnused
+#define PC_HANDLER_NULL , NULL
+#define PC_HANDLER_ARGS0 NULL, NULL
+#else
+#define PC_HANDLER_EXTRA
+#define PC_HANDLER_PARAMS0 void
+#define PC_HANDLER_NULL
+#define PC_HANDLER_ARGS0
+#endif
+
 #ifndef __MWERKS__
 extern s32 rand8(void);
 
@@ -85,24 +99,24 @@ void fn_1_7E88(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4);
 void fn_1_82E0(void);
 s32 fn_1_B670(void);
 void fn_1_D48C(void);
-void fn_1_D718(omObjData* arg0);
-void fn_1_D7D8(omObjData* arg0);
+void fn_1_D718(omObjData* arg0 PC_HANDLER_EXTRA);
+void fn_1_D7D8(omObjData* arg0 PC_HANDLER_EXTRA);
 void fn_1_FE80(void);
 void fn_1_FF7C(s32 arg0);
-void fn_1_1036C(omObjData* arg0);
-void fn_1_10D74(omObjData* arg0);
-void fn_1_11794(omObjData* arg0);
-void fn_1_11834(omObjData* arg0);
-void fn_1_123D8(omObjData* arg0);
-void fn_1_1241C(omObjData* arg0);
-void fn_1_12420(omObjData* arg0);
+void fn_1_1036C(omObjData* arg0 PC_HANDLER_EXTRA);
+void fn_1_10D74(omObjData* arg0 PC_HANDLER_EXTRA);
+void fn_1_11794(omObjData* arg0 PC_HANDLER_EXTRA);
+void fn_1_11834(omObjData* arg0 PC_HANDLER_EXTRA);
+void fn_1_123D8(omObjData* arg0 PC_HANDLER_EXTRA);
+void fn_1_1241C(omObjData* arg0 PC_HANDLER_EXTRA);
+void fn_1_12420(omObjData* arg0 PC_HANDLER_EXTRA);
 void fn_1_12A98(s32 arg0);
 void fn_1_12C08(s32 arg0);
 void fn_1_12DAC(void);
 void fn_1_13908(void);
 void fn_1_130A8(void);
 void fn_1_1317C(void);
-void fn_1_13A38(omObjData* arg0);
+void fn_1_13A38(omObjData* arg0 PC_HANDLER_EXTRA);
 void fn_1_13A3C(s32 arg0, s32 arg1, s32 arg2, s32 arg3);
 void fn_1_13C78(s32 arg0, s32 arg1, s32 arg2);
 void fn_1_13D38(s32 arg0, s32 arg1, s32 arg2);
@@ -630,7 +644,7 @@ void fn_1_9220(void) {
     fn_1_2280(lbl_1_bss_1530.unk00, 2, 2, 0);
 }
 
-void fn_1_93D0(omObjData* arg0) {
+void fn_1_93D0(omObjData* arg0 PC_HANDLER_EXTRA) {
     StructBss1530* temp_r31;
 
     temp_r31 = arg0->data;
@@ -686,7 +700,7 @@ void fn_1_9488(void) {
     } while (var_r31 < 4);
 }
 
-void fn_1_96B0(omObjData* arg0) {
+void fn_1_96B0(omObjData* arg0 PC_HANDLER_EXTRA) {
     StructBss1530* temp_r31;
 
     temp_r31 = arg0->data;
@@ -742,7 +756,7 @@ void fn_1_9768(void) {
     } while (var_r31 < 4);
 }
 
-void fn_1_9990(omObjData* arg0) {
+void fn_1_9990(omObjData* arg0 PC_HANDLER_EXTRA) {
     StructBss1530* temp_r31;
 
     temp_r31 = arg0->data;
@@ -752,7 +766,7 @@ void fn_1_9990(omObjData* arg0) {
     temp_r31->unk04 = 0;
 }
 
-void fn_1_9A08(omObjData* arg0) {
+void fn_1_9A08(omObjData* arg0 PC_HANDLER_EXTRA) {
     StructBss1530* temp_r31;
 
     temp_r31 = arg0->data;
@@ -1199,7 +1213,7 @@ void fn_1_B788(void) {
     fn_1_8C18();
 }
 
-void fn_1_BE5C(void) {
+void fn_1_BE5C(PC_HANDLER_PARAMS0) {
     float var_f31;
 
     var_f31 = fn_1_878(0.0f, 0.1f, lbl_1_bss_B8, 180.0f);
@@ -1210,7 +1224,7 @@ void fn_1_BE5C(void) {
     }
 }
 
-void fn_1_BF60(void) {
+void fn_1_BF60(PC_HANDLER_PARAMS0) {
     float temp_f1;
 
     temp_f1 = fn_1_878(1.0f, 1.1f, lbl_1_bss_B8, 60.0f);
@@ -1372,7 +1386,7 @@ void fn_1_C060(float arg8) {
     HuAudFXPlay(0x1C);
 }
 
-void fn_1_CE6C(omObjData* arg0) {
+void fn_1_CE6C(omObjData* arg0 PC_HANDLER_EXTRA) {
     StructBss1530* sp8 = arg0->data;
     s32 var_r31;
 
@@ -1462,7 +1476,7 @@ void fn_1_D538(omObjData* arg0) {
     temp_r31->unk04 = 0;
 }
 
-void fn_1_D718(omObjData* arg0) {
+void fn_1_D718(omObjData* arg0 PC_HANDLER_EXTRA) {
     float temp_f31;
 
     temp_f31 = lbl_1_bss_1580.unk20 / 255.0f;
@@ -1473,7 +1487,7 @@ void fn_1_D718(omObjData* arg0) {
 
 float lbl_1_data_36C[] = { 0.0f, 120.0f, 240.0f };
 
-void fn_1_D7D8(omObjData* arg0) {
+void fn_1_D7D8(omObjData* arg0 PC_HANDLER_EXTRA) {
     s32 var_r30;
 
     if (lbl_1_bss_B0 == 1.0f) {
@@ -1780,7 +1794,7 @@ void fn_1_FE80(void) {
             lbl_1_bss_1530.unk04(temp_r31);
 #endif
         }
-        fn_1_D7D8(temp_r31);
+        fn_1_D7D8(temp_r31 PC_HANDLER_NULL);
     }
 }
 
@@ -1842,7 +1856,7 @@ void fn_1_FF7C(s32 arg0) {
     }
 }
 
-void fn_1_1036C(omObjData* arg0) {
+void fn_1_1036C(omObjData* arg0 PC_HANDLER_EXTRA) {
     float var_f29;
     float var_f30;
     float temp_f31;
@@ -1951,7 +1965,7 @@ void fn_1_1036C(omObjData* arg0) {
     temp_r30->unk04 = 0;
 }
 
-void fn_1_10D74(omObjData* arg0) {
+void fn_1_10D74(omObjData* arg0 PC_HANDLER_EXTRA) {
     float var_f29;
     float var_f30;
     float temp_f31;
@@ -2061,7 +2075,7 @@ void fn_1_10D74(omObjData* arg0) {
     temp_r30->unk04 = 0;
 }
 
-void fn_1_11794(omObjData* arg0) {
+void fn_1_11794(omObjData* arg0 PC_HANDLER_EXTRA) {
     StructBss1530* temp_r30;
 
     temp_r30 = arg0->data;
@@ -2078,7 +2092,7 @@ void fn_1_11794(omObjData* arg0) {
     temp_r30->unk04 = 0;
 }
 
-void fn_1_11834(omObjData* arg0) {
+void fn_1_11834(omObjData* arg0 PC_HANDLER_EXTRA) {
     float var_f31;
     float var_f30;
     float temp_f26;
@@ -2177,7 +2191,7 @@ void fn_1_11834(omObjData* arg0) {
     temp_r31->unk04 = 0;
 }
 
-void fn_1_123D8(omObjData* arg0) {
+void fn_1_123D8(omObjData* arg0 PC_HANDLER_EXTRA) {
     StructBss1530* temp_r31;
 
     temp_r31 = arg0->data;
@@ -2185,10 +2199,10 @@ void fn_1_123D8(omObjData* arg0) {
     temp_r31->unk04 = 0;
 }
 
-void fn_1_1241C(omObjData* arg0) {
+void fn_1_1241C(omObjData* arg0 PC_HANDLER_EXTRA) {
 }
 
-void fn_1_12420(omObjData* arg0) {
+void fn_1_12420(omObjData* arg0 PC_HANDLER_EXTRA) {
     float sp8[] = { 0.0f, -30.0f, -60.0f, -90.0f };
     float temp_f31;
     StructBss1530* temp_r31;
@@ -2491,7 +2505,7 @@ void fn_1_13908(void) {
     }
 }
 
-void fn_1_13A38(omObjData* arg0) {
+void fn_1_13A38(omObjData* arg0 PC_HANDLER_EXTRA) {
 }
 
 s32 lbl_1_data_504[][27] = {

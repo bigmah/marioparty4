@@ -1565,6 +1565,16 @@ s32 fn_1_62C4(omObjData *arg0)
     }
     // TODO PC
 }
+#ifdef TARGET_PC
+static void fn_1_62C4_thunk(omObjData *object)
+{
+    fn_1_62C4(object);
+}
+#define OBJFUNC_fn_1_62C4 fn_1_62C4_thunk
+#else
+#define OBJFUNC_fn_1_62C4 (void *)fn_1_62C4
+#endif
+
 
 void fn_1_68E8(omObjData *arg0)
 {
@@ -1572,7 +1582,7 @@ void fn_1_68E8(omObjData *arg0)
 
     var_r30 = &lbl_1_bss_1A8;
     fn_1_11818(var_r30->unk00, 0, 8, 5, 0);
-    arg0->func = (void *)fn_1_62C4; // fn_1_62C4 must return s32 to match
+    arg0->func = OBJFUNC_fn_1_62C4; // fn_1_62C4 must return s32 to match (PC: a void thunk, wasm traps on the mismatch)
 }
 
 void fn_1_6944(omObjData *arg0)
@@ -1602,7 +1612,7 @@ void fn_1_6944(omObjData *arg0)
         var_r29->unk88[i] = 0.0f;
     }
     var_r29->unk04 = 1;
-    arg0->func = (void *)fn_1_62C4; // fn_1_62C4 must return s32 to match
+    arg0->func = OBJFUNC_fn_1_62C4; // fn_1_62C4 must return s32 to match (PC: a void thunk, wasm traps on the mismatch)
 }
 
 void fn_1_6BDC(void)
