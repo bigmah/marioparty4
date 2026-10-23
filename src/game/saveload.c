@@ -10,6 +10,7 @@
 #include "game/window.h"
 #ifdef TARGET_PC
 #include "port/game_time.h"
+#include "port/unlock_all.h"
 #endif
 
 #include <stddef.h>
@@ -583,6 +584,7 @@ void SLLoadGameStat(void)
 #ifdef TARGET_PC
     byteswap_gamestat(&GWGameStat);
 #endif
+    port_game_unlock_all(&GWGameStat);
 }
 
 void SLLoadBoard(void)

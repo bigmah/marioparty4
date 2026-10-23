@@ -7,6 +7,7 @@
 #ifndef __MWERKS__
 #include "game/pad.h"
 #include "port/settings.h"
+#include "port/unlock_all.h"
 #endif
 
 SHARED_SYM s16 GwLanguage = 1;
@@ -163,6 +164,7 @@ void GWGameStatReset(void)
     ResetPresent(game_stat);
     ResetFlag(game_stat);
     ResetPauseConfig(game_stat);
+    port_game_unlock_all(game_stat);
     memcpy(&GWGameStat, &GWGameStatDefault, sizeof(GameStat));
     ResetBoardSettings();
 }
